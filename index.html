@@ -44,9 +44,7 @@
             // <img src="{url}" />
  
             imgEl.onerror = function () {
-                // when image loading failed
-                // @todo hide image
-                alert(1);
+                this.setAttribute('hidden', 'hidden')
             }
  
             document.getElementById('images').appendChild(imgEl);
@@ -61,14 +59,10 @@
         // getImages()
  
         // "S"OLID, S -> Single Responsibility
-        var getImages = function (params) {
-            //
-            // var url = 'https://www.reddit.com/r/pics.json';
-            var url = 'https://www.reddit.com/r/pics/search.json?q=cats';
-                    url += '&limit=5';
-                    // @todo: use here params.limit
-                    // @todo: category == "pics"
- 
+        var getImages = function (params = {}) {
+            var url = `https://www.reddit.com/r/${(params.category == undefined) ? 'pics' : params['category']}/search.json?q=cats`
+            url += `&limit=${(params.limit == undefined) ? 100 : params.limit}`;
+
             get(url, function (status, headers, body) {
                 var response = JSON.parse(body);
  
@@ -76,8 +70,6 @@
                     var url = child.data.url;
  
                     appendImage(url);
- 
-                    console.log('ITEM!', child.data.url);
                 });
  
             });
